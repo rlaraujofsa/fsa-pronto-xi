@@ -376,6 +376,11 @@ class Inventory(Pronto):
 
         ActionChains(self.wd).send_keys(row["BRAND"] + Keys.ENTER).perform()
 
+        # Modal: Brand does not exist
+        if self.is_element_clickable(self.selectors["card-dialog"], 1):
+            print("This Brand does not exist! Please add it first before adding the item.")
+            exit
+
         # Item Dimensions section
         ActionChains(self.wd).send_keys(row["UOM"] + Keys.ENTER).perform()
         ActionChains(self.wd).send_keys(Keys.ENTER).perform()
@@ -403,10 +408,12 @@ class Inventory(Pronto):
         ActionChains(self.wd).send_keys(row["Pack Qty 2"] + Keys.ENTER).perform()
         ActionChains(self.wd).send_keys(Keys.ENTER).perform()
 
-        self.__next_element(9)
+        self.__next_element(10)
+
+        input("Press Enter to continue...")
 
         # Price section
-        ActionChains(self.wd).send_keys(row["Currency"] + Keys.ENTER).perform()
+        #ActionChains(self.wd).send_keys(row["Currency"] + Keys.ENTER).perform()
 
         cancel_button = self.wait.until(
             EC.element_to_be_clickable(self.selectors["cancel-button"])
