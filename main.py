@@ -1,15 +1,16 @@
 import argparse
-import config
 import csv
 import os
 import time
 
+from dotenv import load_dotenv
 from selenium import webdriver
 from selenium.common.exceptions import InvalidElementStateException
 
 from checkpoint import CheckPoint
 from pronto import Inventory
 
+load_dotenv()
 
 def main():
     def check_csv_extension(file_path):
@@ -49,13 +50,13 @@ def main():
 
     options = webdriver.ChromeOptions()
     wd = webdriver.Chrome(options=options)
-    wd.get(config.PRONTO_URL)
+    wd.get(os.getenv("PRONTO_URL"))
     wd.implicitly_wait(0.5)
     print(f"Starting Chrome browser. Page: {wd.title}")
 
     inventory = Inventory(wd, args.company)
     # TODO: Move to Server (Local) environment - or Cloud Secrets
-    inventory.login(config.USERNAME, config.PASSWORD)
+    inventory.login(os.getenv("PRONTO_USERNAME"), os.getenv("PRONTO_PASSWORD"))
     inventory.access_maintain_inventory_section()
 
     checkpoint = CheckPoint()
@@ -81,7 +82,7 @@ def main():
             time.sleep(1)
             print(f"Row: {current_row}")
             attempts = 1
-            while attempts <= config.MAX_ATTEMPTS:
+            while attempts <= int(os.getenv("PRONTO_MAX_ATTEMPTS")):
                 try:
                     if code_column == "Item Code":
                         inventory.update_item_descriptions(row)
@@ -90,11 +91,11 @@ def main():
                     break
                 except InvalidElementStateException as ex:
                     print(
-                        f"Processing Item Code: {row[code_column]} failed... Attempt {attempts} out of {config.MAX_ATTEMPTS}"
+                        f"Processing Item Code: {row[code_column]} failed... Attempt {attempts} out of {os.getenv('PRONTO_MAX_ATTEMPTS')}"
                     )
                     attempts += 1
             # TODO: Write failed results in a file
-            if attempts > config.MAX_ATTEMPTS:
+            if attempts > int(os.getenv("PRONTO_MAX_ATTEMPTS")):
                 print(
                     "\033[91m##############################################################"
                 )

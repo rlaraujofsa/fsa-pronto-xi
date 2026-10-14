@@ -410,8 +410,6 @@ class Inventory(Pronto):
 
         self.__next_element(10)
 
-        input("Press Enter to continue...")
-
         # Price section
         #ActionChains(self.wd).send_keys(row["Currency"] + Keys.ENTER).perform()
 
