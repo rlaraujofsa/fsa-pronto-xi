@@ -3,7 +3,7 @@ requires = ["setuptools>=84.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "fsa-scp"
+name = "fsa-pronto-xi"
 version = "0.1.0"
 dependencies = [
     "selenium>=4.51.0",
@@ -15,6 +15,7 @@ dev = [
     "pytest>=9.1.1",
     "pyinstaller>=6.22.3",
     "black>=26.10.1",
+    "python-dotenv>=1.2.4",
 ]
 
 [tool.setuptools]
