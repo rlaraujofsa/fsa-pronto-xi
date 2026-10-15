@@ -7,10 +7,10 @@ from dotenv import load_dotenv
 from selenium import webdriver
 from selenium.common.exceptions import InvalidElementStateException
 
+load_dotenv()  # Load environment variables from .env file
+
 from checkpoint import CheckPoint
 from pronto import Inventory
-
-load_dotenv()
 
 def main():
     def check_csv_extension(file_path):
