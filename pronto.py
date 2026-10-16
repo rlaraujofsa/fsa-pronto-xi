@@ -78,12 +78,12 @@ class Inventory(Pronto):
         self.selectors = self.selectors | {
             # Inventory Maintenance Section
             "company-name-div": (
-                By.ID,
-                "sidenav-company-name",
-            ),  # "div.company-name" did not worked
+                By.CSS_SELECTOR,
+                "li.pro-toolbar-item div#sidenav-company-name",
+            ),
             "company-button": (
                 By.CSS_SELECTOR,
-                f"#all-companies > ul > li[data-company='{company}'] > button",
+                f"ul.company-list li[data-company='{company}'] > button",
             ),  #  > button.text-icon-option
             "inventory-button": (By.ID, "&Inventory"),
             "maintain-inventory-button": (By.ID, "&Maintain Inventory"),
@@ -204,20 +204,16 @@ class Inventory(Pronto):
 
     # Access maintain inventory section
     def access_maintain_inventory_section(self) -> None:
+        time.sleep(2)
         company_name_div = self.wait.until(
             EC.element_to_be_clickable(self.selectors["company-name-div"])
         )
         company_name_div.click()
 
-        # TODO: Change to Show Main Menu link
-        # try:
-        #     wait = WebDriverWait(self.wd, 5)
-        #     uat_button = self.wait.until(EC.element_to_be_clickable(self.selectors["company-button"]))
-        #     uat_button.click()
-        # except TimeoutException as to:
-        #     print("No worries, continue...")
-
         time.sleep(1)
+
+        company_button = self.wait.until(EC.element_to_be_clickable(self.selectors["company-button"]))
+        company_button.click()        
 
         sidenav_home_div = self.wait.until(
             EC.element_to_be_clickable(self.selectors["sidenav-home-div"])
@@ -374,7 +370,7 @@ class Inventory(Pronto):
         # Item Type section
         self.__next_element(14)
 
-        ActionChains(self.wd).send_keys(row["BRAND"] + Keys.ENTER).perform()
+        ActionChains(self.wd).send_keys(row["Brand"] + Keys.ENTER).perform()
 
         # Modal: Brand does not exist
         if self.is_element_clickable(self.selectors["card-dialog"], 1):
@@ -384,10 +380,13 @@ class Inventory(Pronto):
         # Item Dimensions section
         ActionChains(self.wd).send_keys(row["UOM"] + Keys.ENTER).perform()
         ActionChains(self.wd).send_keys(Keys.ENTER).perform()
-        ActionChains(self.wd).send_keys(row["Pack Description"] + Keys.ENTER).perform()
+        ActionChains(self.wd).send_keys(row["Pack"] + Keys.ENTER).perform()
         ActionChains(self.wd).send_keys(row["Pack Qty"] + Keys.ENTER).perform()
+        ActionChains(self.wd).send_keys(Keys.ENTER).perform()
+        ActionChains(self.wd).send_keys(row["Buy Price"] + Keys.ENTER).perform()
+        ActionChains(self.wd).send_keys(row["Tarrif"] + Keys.ENTER).perform()
 
-        self.__next_element(11)
+        self.__next_element(12)
 
         time.sleep(0.5)
 
@@ -398,20 +397,25 @@ class Inventory(Pronto):
         ActionChains(self.wd).send_keys(
             row["Supplier Description"] + Keys.ENTER
         ).perform()
-        ActionChains(self.wd).send_keys(row["Supplier Priority"] + Keys.ENTER).perform()
+        ActionChains(self.wd).send_keys(row["Supp Priority"] + Keys.ENTER).perform()
         ActionChains(self.wd).send_keys(Keys.ENTER).perform()
 
         # Pack Details section
         ActionChains(self.wd).send_keys(
-            row["Pack Description 2"] + Keys.ENTER
+            row["Pack2"] + Keys.ENTER
         ).perform()
-        ActionChains(self.wd).send_keys(row["Pack Qty 2"] + Keys.ENTER).perform()
+        ActionChains(self.wd).send_keys("1" + Keys.ENTER).perform()
+        ActionChains(self.wd).send_keys(row["Pack Qty2"] + Keys.ENTER).perform()
         ActionChains(self.wd).send_keys(Keys.ENTER).perform()
 
-        self.__next_element(10)
+        #Shipping Details section
+        ActionChains(self.wd).send_keys(row["EOQ"] + Keys.ENTER).perform()
+        self.__next_element(7)
 
-        # Price section
-        #ActionChains(self.wd).send_keys(row["Currency"] + Keys.ENTER).perform()
+        # Price Details section
+        # Details section
+        ActionChains(self.wd).send_keys(row["Buy Price"] + Keys.ENTER).perform()
+        ActionChains(self.wd).send_keys(Keys.ENTER).perform()
 
         cancel_button = self.wait.until(
             EC.element_to_be_clickable(self.selectors["cancel-button"])
@@ -426,8 +430,6 @@ class Inventory(Pronto):
 
         time.sleep(0.5)
 
-        # Price Details section
-        # Details section
         self.__next_element(4)
         # Pricing Details section
         for i in range(0, 5):
@@ -454,7 +456,7 @@ class Inventory(Pronto):
         # TODO: Do not hardcode default bin location, at least put it in a config file
         ActionChains(self.wd).send_keys("ZZ" + Keys.ENTER).perform()
 
-        self.__next_element(9)
+        self.__next_element(10)
 
         time.sleep(0.5)
 
